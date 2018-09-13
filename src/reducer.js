@@ -1,4 +1,4 @@
-import { LOCATION_CHANGE } from './actions'
+import { LOCATION_CHANGE, ROUTE_MATCHED } from './actions'
 
 const createConnectRouter = (structure) => {
   const {
@@ -14,16 +14,20 @@ const createConnectRouter = (structure) => {
    */
   const routerReducer = (state, { type, payload } = {}) => {
     if (type === LOCATION_CHANGE) {
-      return merge(state, payload)
+      return setIn(merge(state, payload), ['matches'], [])
+    }
+    if (type === ROUTE_MATCHED) {
+      return setIn(state, ['matches', state.matches.length], payload)
     }
 
     return state
   }
 
-  const connectRouter = (history) => {
+  const connectRouter = (history, matches = []) => {
     const initialRouterState = fromJS({
       location: history.location,
       action: history.action,
+      matches,
     })
     // Wrap a root reducer and return a new root reducer with router state
     return (rootReducer) => (state, action) => {
