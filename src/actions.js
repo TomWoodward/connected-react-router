@@ -13,6 +13,16 @@ export const onLocationChanged = (location, action) => ({
 })
 
 /**
+ * This action type will be dispatched when a route is matched.
+ */
+export const ROUTE_MATCHED = '@@router/ROUTE_MATCHED'
+
+export const onRouteMatched = (match) => ({
+  type: ROUTE_MATCHED,
+  payload: match,
+})
+
+/**
  * This action type will be dispatched by the history actions below.
  * If you're writing a middleware to watch for navigation events, be sure to
  * look for actions of this type.
