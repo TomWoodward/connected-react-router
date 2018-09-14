@@ -15,10 +15,8 @@ const createConnectedRoute = (structure) => {
     constructor(props, context) {
       super(props, context);
 
-      const match = this.computeMatch(props, context.router)
-
-      if (match) {
-        props.onRouteMatched({...match, name: props.name})
+      if (this.state.match) {
+        props.onRouteMatched({...this.state.match, name: props.name})
       }
     }
 
@@ -27,7 +25,7 @@ const createConnectedRoute = (structure) => {
         super.componentWillUpdate(nextProps, nextState);
       }
 
-      if (nextState.match) {
+      if (nextState.match && JSON.stringify(this.state.match) !== JSON.stringify(nextState.match)) {
         this.props.onRouteMatched({...nextState.match, name: nextProps.name})
       }
     }
@@ -45,16 +43,14 @@ const createConnectedRoute = (structure) => {
   ConnectedRoute.propTypes = {
     ...(Route.propTypes || {}),
     name: PropTypes.string,
+    onRouteMatched: PropTypes.func.isRequired,
     location: PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.string,
     ]).isRequired,
-    action: PropTypes.string.isRequired,
-    onRouteMatched: PropTypes.func.isRequired,
   }
 
   const mapStateToProps = state => ({
-    action: getIn(state, ['router', 'action']),
     location: getIn(state, ['router', 'location']),
   })
 
